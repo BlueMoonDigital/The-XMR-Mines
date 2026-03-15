@@ -1,194 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>The XMR Mines</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #1a1a1a;
-    color: #ccc;
-    margin: 20px;
-  }
-
-  h1 {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
-  /* Top stats container */
-  .top-stats {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    border-bottom: 1px solid #555;
-    padding-bottom: 20px;
-    margin-bottom: 30px;
-  }
-
-  .stat-col {
-    flex: 1 1 45%;
-    display: flex;
-    flex-direction: column;
-    padding: 0 10px;
-  }
-
-  .stat-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-
-  .stat-label {
-    color: #aaa;
-    font-weight: bold;
-  }
-
-  .stat-value {
-    text-align: right;
-    font-weight: bold;
-  }
-
-  .blue { color: #4da6ff; }
-  .green { color: #33cc33; }
-  .red { color: #ff3333; }
-
-  /* Table styles */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-
-  th, td {
-    padding: 12px 8px;
-    border: 1px solid #444;
-    text-align: center;
-  }
-
-  th {
-    background: #333;
-    color: #ccc;
-  }
-
-  tr:nth-child(even) { background: #222; }
-  tr:nth-child(odd) { background: #1f1f1f; }
-
-  .online { color: #33cc33; font-weight: bold; }
-  .offline { color: #ff3333; font-weight: bold; }
-
-  /* Mobile responsiveness */
-  @media (max-width: 600px) {
-    .top-stats { flex-direction: column; }
-    .stat-col { flex: 1 1 100%; margin-bottom: 15px; }
-    .stat-row { justify-content: space-between; }
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>The XMR Mines</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e1e;  /* dark gray background */
+      color: #ccc;          /* light gray text */
+      margin: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .stats-table {
+      width: 100%;
+      display: table;
+      margin-bottom: 30px;
+      table-layout: fixed;
+    }
+    .stats-row {
+      display: table-row;
+    }
+    .stats-cell {
+      display: table-cell;
+      padding: 10px 20px;
+      vertical-align: middle;
+    }
+    .divider {
+      width: 2px;
+      background: #555;
+    }
+    .stat-title {
+      font-weight: bold;
+    }
+    .stat-value {
+      text-align: right;
+      font-family: monospace;
+    }
+    .green { color: #4caf50; font-weight: bold; }
+    .red { color: #f44336; font-weight: bold; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #444;
+    }
+    th {
+      background: #333;
+      color: #fff;
+    }
+    tr:nth-child(even) { background: #2a2a2a; }
+    .online { color: #4caf50; font-weight: bold; }
+    .offline { color: #f44336; font-weight: bold; }
+  </style>
 </head>
 <body>
-<h1>The XMR Mines</h1>
+  <h1>The XMR Mines</h1>
 
-<div class="top-stats">
-  <div class="stat-col">
-    <div class="stat-row">
-      <div class="stat-label">Pending XMR:</div>
-      <div id="pending" class="stat-value blue">0.000000</div>
+  <div class="stats-table">
+    <div class="stats-row">
+      <div class="stats-cell">
+        <div class="stat-title">Pending XMR:</div>
+        <div class="stat-value" id="pending">0</div>
+      </div>
+      <div class="divider"></div>
+      <div class="stats-cell">
+        <div class="stat-title">Est. Daily:</div>
+        <div class="stat-value" id="est_daily">0</div>
+      </div>
     </div>
-    <div class="stat-row">
-      <div class="stat-label">Paid XMR:</div>
-      <div id="paid" class="stat-value blue">0.000000</div>
+    <div class="stats-row">
+      <div class="stats-cell">
+        <div class="stat-title">Paid XMR:</div>
+        <div class="stat-value" id="paid">0</div>
+      </div>
+      <div class="divider"></div>
+      <div class="stats-cell">
+        <div class="stat-title">Est. Monthly:</div>
+        <div class="stat-value" id="est_monthly">0</div>
+      </div>
     </div>
-    <div class="stat-row">
-      <div class="stat-label">Pool Status:</div>
-      <div id="pool_status" class="stat-value red">OFFLINE</div>
+    <div class="stats-row">
+      <div class="stats-cell">
+        <div class="stat-title">Pool Status:</div>
+        <div class="stat-value" id="pool_status">OFFLINE</div>
+      </div>
+      <div class="divider"></div>
+      <div class="stats-cell">
+        <div class="stat-title">Total Hashrate:</div>
+        <div class="stat-value" id="total_hash">0 H/s</div>
+      </div>
     </div>
   </div>
 
-  <div class="stat-col">
-    <div class="stat-row">
-      <div class="stat-label">Est. Daily:</div>
-      <div id="est_daily" class="stat-value blue">0.000000</div>
-    </div>
-    <div class="stat-row">
-      <div class="stat-label">Est. Monthly:</div>
-      <div id="est_monthly" class="stat-value blue">0.000000</div>
-    </div>
-    <div class="stat-row">
-      <div class="stat-label">Total Hashrate:</div>
-      <div id="total_hash" class="stat-value green">0 H/s</div>
-    </div>
-  </div>
-</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Miner</th>
+        <th>#</th>
+        <th>Hashrate</th>
+        <th>Acc</th>
+        <th>Rej</th>
+        <th>Uptime (h)</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="miners-table">
+      <tr><td colspan="7">Loading...</td></tr>
+    </tbody>
+  </table>
 
-<table>
-  <thead>
-    <tr>
-      <th>Miner</th>
-      <th>#</th>
-      <th>Hashrate</th>
-      <th>Acc</th>
-      <th>Rej</th>
-      <th>Uptime (h)</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody id="miners-table">
-    <tr><td colspan="7">Loading...</td></tr>
-  </tbody>
-</table>
+  <script>
+    async function updateDashboard() {
+      try {
+        const res = await fetch("http://192.168.1.99:5000/api/stats");
+        const data = await res.json();
 
-<script>
-async function updateDashboard() {
-  try {
-    const res = await fetch("https://prominent-shockheaded-terrie.ngrok-free.dev/api/stats");
-    const data = await res.json();
+        // Top stats
+        document.getElementById("pending").textContent = data.pool.pending.toFixed(6);
+        document.getElementById("paid").textContent = data.pool.paid.toFixed(6);
+        document.getElementById("pool_status").textContent = data.pool.status;
+        document.getElementById("pool_status").className = data.pool.status.toLowerCase();
+        document.getElementById("total_hash").textContent = Math.round(data.total_hash).toLocaleString() + " H/s";
 
-    // Update top stats
-    document.getElementById("pending").textContent = data.pool.pending.toFixed(6);
-    document.getElementById("paid").textContent = data.pool.paid.toFixed(6);
-    document.getElementById("pool_status").textContent = data.pool.status;
-    document.getElementById("pool_status").className = "stat-value " + (data.pool.status === "ONLINE" ? "green" : "red");
-    document.getElementById("total_hash").textContent = Math.round(data.total_hash).toLocaleString() + " H/s";
+        // Simple estimates (example: est daily = 0.008 * total hash / 1000)
+        document.getElementById("est_daily").textContent = (data.total_hash / 1000 * 0.0084).toFixed(6);
+        document.getElementById("est_monthly").textContent = ((data.total_hash / 1000 * 0.0084) * 30).toFixed(6);
 
-    // Use total_hash for estimates
-    const khs = data.total_hash / 1000;
-    const estDaily = khs * (0.0084 / 103.4);
-    const estMonthly = estDaily * 30;
-    document.getElementById("est_daily").textContent = estDaily.toFixed(6);
-    document.getElementById("est_monthly").textContent = estMonthly.toFixed(6);
+        // Miners table
+        const tbody = document.getElementById("miners-table");
+        tbody.innerHTML = "";
 
-    // Update miner table
-    const tbody = document.getElementById("miners-table");
-    tbody.innerHTML = "";
-
-    if (data.miners.length === 0) {
-      tbody.innerHTML = "<tr><td colspan='7'>No miners found.</td></tr>";
-    } else {
-      data.miners.forEach(m => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${m.name}</td>
-          <td>${m.ip.split(".").pop()}</td>
-          <td>${Math.round(m.hash).toLocaleString()}</td>
-          <td>${m.acc}</td>
-          <td>${m.rej}</td>
-          <td>${m.up.toFixed(2)}</td>
-          <td class="${m.status.toLowerCase()}">${m.status}</td>
-        `;
-        tbody.appendChild(row);
-      });
+        if (data.miners.length === 0) {
+          tbody.innerHTML = "<tr><td colspan='7'>No miners found.</td></tr>";
+        } else {
+          data.miners.forEach(m => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${m.name}</td>
+              <td>${m.ip.split(".").pop()}</td>
+              <td>${Math.round(m.hash)}</td>
+              <td>${m.acc}</td>
+              <td>${m.rej}</td>
+              <td>${m.up.toFixed(2)}</td>
+              <td class="${m.status.toLowerCase()}">${m.status}</td>
+            `;
+            tbody.appendChild(row);
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching stats:", err);
+      }
     }
 
-  } catch (err) {
-    console.error("Error fetching stats:", err);
-  }
-}
-
-// Initial load
-updateDashboard();
-
-// Refresh every 5 seconds
-setInterval(updateDashboard, 5000);
-</script>
+    updateDashboard();
+    setInterval(updateDashboard, 5000);
+  </script>
 </body>
 </html>
