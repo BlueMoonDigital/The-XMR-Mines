@@ -12,29 +12,25 @@ body {
 }
 h1 {
   text-align: center;
+  font-size: 2em;
   margin-bottom: 30px;
 }
 .stats-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  border-bottom: 2px solid #555;
-  padding-bottom: 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-row-gap: 15px;
+  grid-column-gap: 50px; /* space between columns */
+  margin-bottom: 25px;
 }
 .stat-box {
-  flex: 1 1 45%;
   display: flex;
   justify-content: space-between;
-  margin: 5px 0;
   font-family: monospace;
+  font-size: 1.3em;
 }
-.stat-title {
-  font-weight: bold;
-}
-.stat-value {
-  text-align: right;
-  min-width: 80px;
-}
+.stat-title { font-weight: bold; }
+.stat-value { text-align: right; min-width: 100px; }
+.blue { color: #4da6ff; font-weight: bold; }
 .green { color: #4caf50; font-weight: bold; }
 .red { color: #f44336; font-weight: bold; }
 
@@ -42,22 +38,20 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  font-size: 1.1em;
 }
-th, td {
-  padding: 10px;
-  text-align: center;
-  border: 1px solid #444;
-}
-th {
-  background: #333;
-  color: #fff;
-}
+th, td { padding: 10px; text-align: center; border: 1px solid #444; }
+th { background: #333; color: #fff; }
 tr:nth-child(even) { background: #2a2a2a; }
 .online { color: #4caf50; font-weight: bold; }
 .offline { color: #f44336; font-weight: bold; }
 
 @media (max-width: 600px) {
-  .stat-box { flex: 1 1 100%; justify-content: space-between; }
+  .stats-container {
+    grid-template-columns: 1fr;
+    grid-column-gap: 0;
+  }
+  .stat-box { font-size: 1.2em; }
 }
 </style>
 </head>
@@ -66,12 +60,12 @@ tr:nth-child(even) { background: #2a2a2a; }
 <h1>The XMR Mines</h1>
 
 <div class="stats-container">
-  <div class="stat-box"><div class="stat-title">Pending XMR:</div><div class="stat-value" id="pending">0.000000</div></div>
-  <div class="stat-box"><div class="stat-title">Est. Daily:</div><div class="stat-value" id="est_daily">0.000000</div></div>
-  <div class="stat-box"><div class="stat-title">Paid XMR:</div><div class="stat-value" id="paid">0.000000</div></div>
-  <div class="stat-box"><div class="stat-title">Est. Monthly:</div><div class="stat-value" id="est_monthly">0.000000</div></div>
+  <div class="stat-box"><div class="stat-title">Pending XMR:</div><div class="stat-value blue" id="pending">0.000000</div></div>
+  <div class="stat-box"><div class="stat-title">Est. Daily:</div><div class="stat-value blue" id="est_daily">0.000000</div></div>
+  <div class="stat-box"><div class="stat-title">Paid XMR:</div><div class="stat-value blue" id="paid">0.000000</div></div>
+  <div class="stat-box"><div class="stat-title">Est. Monthly:</div><div class="stat-value blue" id="est_monthly">0.000000</div></div>
   <div class="stat-box"><div class="stat-title">Pool Status:</div><div class="stat-value" id="pool_status">OFFLINE</div></div>
-  <div class="stat-box"><div class="stat-title">Total Hashrate:</div><div class="stat-value" id="total_hash">0 H/s</div></div>
+  <div class="stat-box"><div class="stat-title">Total Hashrate:</div><div class="stat-value green" id="total_hash">0 H/s</div></div>
 </div>
 
 <table>
@@ -97,6 +91,7 @@ async function updateDashboard() {
     const res = await fetch("http://192.168.1.99:5000/api/stats");
     const data = await res.json();
 
+    // Top stats
     document.getElementById("pending").textContent = data.pool.pending.toFixed(6);
     document.getElementById("paid").textContent = data.pool.paid.toFixed(6);
     document.getElementById("pool_status").textContent = data.pool.status;
@@ -106,6 +101,7 @@ async function updateDashboard() {
     document.getElementById("est_daily").textContent = (data.total_hash/1000*0.0084).toFixed(6);
     document.getElementById("est_monthly").textContent = ((data.total_hash/1000*0.0084)*30).toFixed(6);
 
+    // Miner table
     const tbody = document.getElementById("miners-table");
     tbody.innerHTML = "";
     if (data.miners.length === 0) {
@@ -129,7 +125,6 @@ async function updateDashboard() {
     console.error("Error fetching stats:", err);
   }
 }
-
 updateDashboard();
 setInterval(updateDashboard, 5000);
 </script>
