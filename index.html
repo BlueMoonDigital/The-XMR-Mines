@@ -1,0 +1,21 @@
+<h2>The XMR Mines</h2>
+<pre id="json-output">Loading...</pre>
+
+<script>
+async function updateDashboard() {
+    try {
+        const res = await fetch("http://192.168.1.99:5000/api/stats");
+        const data = await res.json();
+        document.getElementById("json-output").textContent = JSON.stringify(data, null, 2);
+    } catch (err) {
+        document.getElementById("json-output").textContent = "Error fetching data";
+        console.error(err);
+    }
+}
+
+// Initial load
+updateDashboard();
+
+// Refresh every 5 seconds
+setInterval(updateDashboard, 5000);
+</script>
