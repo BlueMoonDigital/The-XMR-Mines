@@ -1,133 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>The XMR Mines</title>
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #1e1e1e;
-  color: #ccc;
-  margin: 20px;
-}
-h1 {
-  text-align: center;
-  font-size: 2em;
-  margin-bottom: 30px;
-}
-.stats-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-row-gap: 15px;
-  grid-column-gap: 50px; /* space between columns */
-  margin-bottom: 25px;
-}
-.stat-box {
-  display: flex;
-  justify-content: space-between;
-  font-family: monospace;
-  font-size: 1.3em;
-}
-.stat-title { font-weight: bold; }
-.stat-value { text-align: right; min-width: 100px; }
-.blue { color: #4da6ff; font-weight: bold; }
-.green { color: #4caf50; font-weight: bold; }
-.red { color: #f44336; font-weight: bold; }
+  <meta charset="UTF-8">
+  <title>The XMR Mines</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #1c1c1c; color: #ccc; margin: 20px; }
+    h1 { text-align: center; font-size: 2em; margin-bottom: 20px; }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  font-size: 1.1em;
-}
-th, td { padding: 10px; text-align: center; border: 1px solid #444; }
-th { background: #333; color: #fff; }
-tr:nth-child(even) { background: #2a2a2a; }
-.online { color: #4caf50; font-weight: bold; }
-.offline { color: #f44336; font-weight: bold; }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 20px;
+      max-width: 600px;
+      margin: auto;
+      padding-bottom: 20px;
+    }
+    .stat-box {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #444;
+      padding: 10px 0;
+      font-size: 1.2em;
+    }
+    .stat-left { color: #ccc; }
+    .stat-right { color: #00ff00; font-weight: bold; text-align: right; }
 
-@media (max-width: 600px) {
-  .stats-container {
-    grid-template-columns: 1fr;
-    grid-column-gap: 0;
-  }
-  .stat-box { font-size: 1.2em; }
-}
-</style>
+    .pool-status { color: #00ff00; font-weight: bold; }
+    .pool-offline { color: #ff4444; font-weight: bold; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 1.1em;
+    }
+    th, td {
+      padding: 8px 12px;
+      border: 1px solid #444;
+      text-align: center;
+    }
+    th { background: #333; color: #fff; }
+    tr:nth-child(even) { background: #2a2a2a; }
+    .online { color: #00ff00; font-weight: bold; }
+    .offline { color: #ff4444; font-weight: bold; }
+
+    @media (max-width: 600px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .stat-box { justify-content: space-between; }
+    }
+  </style>
 </head>
 <body>
+  <h1>The XMR Mines</h1>
 
-<h1>The XMR Mines</h1>
+  <div class="stats-grid">
+    <div class="stat-box">
+      <span class="stat-left">Pending XMR:</span>
+      <span class="stat-right" id="pending">0</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-left">Est. Daily:</span>
+      <span class="stat-right" id="est_daily">0</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-left">Paid XMR:</span>
+      <span class="stat-right" id="paid">0</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-left">Est. Monthly:</span>
+      <span class="stat-right" id="est_monthly">0</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-left">Pool Status:</span>
+      <span class="stat-right" id="pool_status" class="pool-status">OFFLINE</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-left">Total Hashrate:</span>
+      <span class="stat-right" id="total_hash">0 H/s</span>
+    </div>
+  </div>
 
-<div class="stats-container">
-  <div class="stat-box"><div class="stat-title">Pending XMR:</div><div class="stat-value blue" id="pending">0.000000</div></div>
-  <div class="stat-box"><div class="stat-title">Est. Daily:</div><div class="stat-value blue" id="est_daily">0.000000</div></div>
-  <div class="stat-box"><div class="stat-title">Paid XMR:</div><div class="stat-value blue" id="paid">0.000000</div></div>
-  <div class="stat-box"><div class="stat-title">Est. Monthly:</div><div class="stat-value blue" id="est_monthly">0.000000</div></div>
-  <div class="stat-box"><div class="stat-title">Pool Status:</div><div class="stat-value" id="pool_status">OFFLINE</div></div>
-  <div class="stat-box"><div class="stat-title">Total Hashrate:</div><div class="stat-value green" id="total_hash">0 H/s</div></div>
-</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Miner</th>
+        <th>#</th>
+        <th>Hashrate</th>
+        <th>Acc</th>
+        <th>Rej</th>
+        <th>Uptime (h)</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="miners-table">
+      <tr><td colspan="7">Loading...</td></tr>
+    </tbody>
+  </table>
 
-<table>
-  <thead>
-    <tr>
-      <th>Miner</th>
-      <th>#</th>
-      <th>Hashrate</th>
-      <th>Acc</th>
-      <th>Rej</th>
-      <th>Uptime (h)</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody id="miners-table">
-    <tr><td colspan="7">Loading...</td></tr>
-  </tbody>
-</table>
+  <script>
+    const HASH_TO_XMR_DAILY = 0.0084 / 103.4; // adjust to your real conversion
 
-<script>
-async function updateDashboard() {
-  try {
-    const res = await fetch("http://192.168.1.99:5000/api/stats");
-    const data = await res.json();
+    async function updateDashboard() {
+      try {
+        const res = await fetch("http://127.0.0.1:5000/api/stats"); // your miner_api.py must be running
+        const data = await res.json();
 
-    // Top stats
-    document.getElementById("pending").textContent = data.pool.pending.toFixed(6);
-    document.getElementById("paid").textContent = data.pool.paid.toFixed(6);
-    document.getElementById("pool_status").textContent = data.pool.status;
-    document.getElementById("pool_status").className = data.pool.status.toLowerCase();
-    document.getElementById("total_hash").textContent = Math.round(data.total_hash).toLocaleString() + " H/s";
+        // Update top stats
+        document.getElementById("pending").textContent = data.pool.pending.toFixed(6);
+        document.getElementById("paid").textContent = data.pool.paid.toFixed(6);
 
-    document.getElementById("est_daily").textContent = (data.total_hash/1000*0.0084).toFixed(6);
-    document.getElementById("est_monthly").textContent = ((data.total_hash/1000*0.0084)*30).toFixed(6);
+        document.getElementById("total_hash").textContent = Math.round(data.total_hash).toLocaleString() + " H/s";
 
-    // Miner table
-    const tbody = document.getElementById("miners-table");
-    tbody.innerHTML = "";
-    if (data.miners.length === 0) {
-      tbody.innerHTML = "<tr><td colspan='7'>No miners found.</td></tr>";
-    } else {
-      data.miners.forEach(m => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${m.name}</td>
-          <td>${m.ip.split(".").pop()}</td>
-          <td>${Math.round(m.hash)}</td>
-          <td>${m.acc}</td>
-          <td>${m.rej}</td>
-          <td>${m.up.toFixed(2)}</td>
-          <td class="${m.status.toLowerCase()}">${m.status}</td>
-        `;
-        tbody.appendChild(row);
-      });
+        // Estimates based on total hashrate
+        const khs = data.total_hash / 1000;
+        const estDaily = khs * HASH_TO_XMR_DAILY;
+        const estMonthly = estDaily * 30;
+        document.getElementById("est_daily").textContent = estDaily.toFixed(6);
+        document.getElementById("est_monthly").textContent = estMonthly.toFixed(6);
+
+        // Pool status
+        const poolEl = document.getElementById("pool_status");
+        poolEl.textContent = data.pool.status;
+        poolEl.className = (data.pool.status === "ONLINE") ? "stat-right pool-status" : "stat-right pool-offline";
+
+        // Update miner table
+        const tbody = document.getElementById("miners-table");
+        tbody.innerHTML = "";
+
+        if (data.miners.length === 0) {
+          tbody.innerHTML = "<tr><td colspan='7'>No miners found.</td></tr>";
+        } else {
+          data.miners.forEach(m => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${m.name}</td>
+              <td>${m.ip.split(".").pop()}</td>
+              <td>${Math.round(m.hash).toLocaleString()}</td>
+              <td>${m.acc}</td>
+              <td>${m.rej}</td>
+              <td>${m.up.toFixed(2)}</td>
+              <td class="${m.status.toLowerCase()}">${m.status}</td>
+            `;
+            tbody.appendChild(row);
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching stats:", err);
+      }
     }
-  } catch(err) {
-    console.error("Error fetching stats:", err);
-  }
-}
-updateDashboard();
-setInterval(updateDashboard, 5000);
-</script>
 
+    updateDashboard();
+    setInterval(updateDashboard, 5000);
+  </script>
 </body>
 </html>
