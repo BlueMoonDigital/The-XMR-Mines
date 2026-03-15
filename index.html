@@ -3,98 +3,109 @@
 <head>
   <meta charset="UTF-8">
   <title>The XMR Mines</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      background: #1e1e1e; 
-      color: #ccc; 
-      margin: 20px; 
+    body {
+      font-family: Arial, sans-serif;
+      background: #1c1c1c;
+      color: #ccc;
+      margin: 20px;
     }
-    h1 { 
-      text-align: center; 
-      font-size: 2.2em; 
+
+    h1 {
+      text-align: center;
       margin-bottom: 30px;
-      color: #eee;
     }
-    .stats-grid {
+
+    .top-stats {
       display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 40px;
-      margin-bottom: 30px;
       flex-wrap: wrap;
+      justify-content: space-between;
+      border-bottom: 1px solid #444;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
     }
-    .stats-column {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      min-width: 180px;
-    }
+
     .stat-box {
+      flex: 1 1 45%;
       display: flex;
       justify-content: space-between;
-      font-family: monospace;
-      font-size: 1.4em;
+      margin-bottom: 10px;
     }
-    .divider {
-      width: 2px;
-      background: #555;
-      margin-top: 0;
-      margin-bottom: 0;
-    }
-    .blue { color: #4da6ff; font-weight: bold; }
-    .green { color: #6aff6a; font-weight: bold; }
-    .red { color: #ff6a6a; font-weight: bold; }
-    table { 
-      width: 100%; 
-      border-collapse: collapse; 
-      margin-top: 20px; 
-    }
-    th, td { 
-      padding: 10px 12px; 
-      border: 1px solid #444; 
-      text-align: center; 
-    }
-    th { 
-      background: #333; 
-      color: #eee; 
-      font-size: 1.1em;
-    }
-    tr:nth-child(even) { 
-      background: #2a2a2a; 
-    }
-    tr:nth-child(odd) { 
-      background: #242424; 
-    }
-    .online { color: #6aff6a; font-weight: bold; }
-    .offline { color: #ff6a6a; font-weight: bold; }
 
-    /* Mobile responsive */
+    .stat-box div {
+      flex: 1;
+    }
+
+    .stat-label {
+      font-weight: bold;
+    }
+
+    .stat-value {
+      text-align: right;
+    }
+
+    .green { color: #0f0; font-weight: bold; }
+    .red { color: #f00; font-weight: bold; }
+    .blue { color: #0af; font-weight: bold; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #444;
+      text-align: center;
+    }
+
+    th {
+      background: #333;
+      color: #fff;
+    }
+
+    tr:nth-child(even) {
+      background: #2a2a2a;
+    }
+
+    .online { color: #0f0; font-weight: bold; }
+    .offline { color: #f00; font-weight: bold; }
+
     @media (max-width: 600px) {
-      .stats-grid {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .divider {
-        display: none;
-      }
+      .stat-box { flex: 1 1 100%; }
+      table th, table td { font-size: 14px; padding: 8px; }
     }
   </style>
 </head>
 <body>
   <h1>The XMR Mines</h1>
 
-  <div class="stats-grid">
-    <div class="stats-column">
-      <div class="stat-box"><span>Pending XMR:</span> <span id="pending" class="blue">0</span></div>
-      <div class="stat-box"><span>Paid XMR:</span> <span id="paid" class="blue">0</span></div>
-      <div class="stat-box"><span>Pool Status:</span> <span id="pool_status" class="green">OFFLINE</span></div>
+  <div class="top-stats">
+    <div class="stat-box">
+      <div class="stat-label">Pending XMR:</div>
+      <div class="stat-value blue" id="pending">0.000000</div>
     </div>
-    <div class="divider"></div>
-    <div class="stats-column">
-      <div class="stat-box"><span>Est. Daily:</span> <span id="est_daily" class="blue">0</span></div>
-      <div class="stat-box"><span>Est. Monthly:</span> <span id="est_monthly" class="blue">0</span></div>
-      <div class="stat-box"><span>Total Hashrate:</span> <span id="total_hash" class="green">0</span> H/s</div>
+    <div class="stat-box">
+      <div class="stat-label">Est. Daily:</div>
+      <div class="stat-value blue" id="est_daily">0.000000</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Paid XMR:</div>
+      <div class="stat-value blue" id="paid">0.000000</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Est. Monthly:</div>
+      <div class="stat-value blue" id="est_monthly">0.000000</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Pool Status:</div>
+      <div class="stat-value green" id="pool_status">OFFLINE</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Total Hashrate:</div>
+      <div class="stat-value green" id="total_hash">0 H/s</div>
     </div>
   </div>
 
@@ -118,16 +129,16 @@
   <script>
     async function updateDashboard() {
       try {
-        const res = await fetch("http://192.168.1.99:5000/api/stats");
+        const res = await fetch("https://prominent-shockheaded-terrie.ngrok-free.dev/api/stats");
         const data = await res.json();
 
         // Update top stats
         document.getElementById("pending").textContent = data.pool.pending.toFixed(6);
         document.getElementById("paid").textContent = data.pool.paid.toFixed(6);
         document.getElementById("pool_status").textContent = data.pool.status;
-        document.getElementById("total_hash").textContent = Math.round(data.total_hash);
+        document.getElementById("total_hash").textContent = Math.round(data.total_hash).toLocaleString() + " H/s";
 
-        // Estimate calculations
+        // Simple estimates
         const khs = data.total_hash / 1000;
         const estDaily = khs * (0.0084 / 103.4);
         const estMonthly = estDaily * 30;
@@ -146,16 +157,15 @@
             row.innerHTML = `
               <td>${m.name}</td>
               <td>${m.ip.split(".").pop()}</td>
-              <td>${Math.round(m.hash)}</td>
+              <td>${Math.round(m.hash).toLocaleString()}</td>
               <td>${m.acc}</td>
               <td>${m.rej}</td>
               <td>${m.up.toFixed(2)}</td>
-              <td class="${m.status.toLowerCase()}" style="text-align: right;">${m.status}</td>
+              <td class="${m.status.toLowerCase()}">${m.status}</td>
             `;
             tbody.appendChild(row);
           });
         }
-
       } catch (err) {
         console.error("Error fetching stats:", err);
       }
@@ -163,6 +173,7 @@
 
     // Initial load
     updateDashboard();
+
     // Refresh stats every 5 seconds
     setInterval(updateDashboard, 5000);
   </script>
