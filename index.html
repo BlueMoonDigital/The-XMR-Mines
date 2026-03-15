@@ -22,23 +22,25 @@
       align-items: flex-start;
       gap: 40px;
       margin-bottom: 30px;
+      flex-wrap: wrap;
     }
     .stats-column {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
       gap: 15px;
       min-width: 180px;
+    }
+    .stat-box {
+      display: flex;
+      justify-content: space-between;
+      font-family: monospace;
+      font-size: 1.4em;
     }
     .divider {
       width: 2px;
       background: #555;
       margin-top: 0;
       margin-bottom: 0;
-    }
-    .stat-box {
-      font-family: monospace;
-      font-size: 1.4em;
     }
     .blue { color: #4da6ff; font-weight: bold; }
     .green { color: #6aff6a; font-weight: bold; }
@@ -66,6 +68,17 @@
     }
     .online { color: #6aff6a; font-weight: bold; }
     .offline { color: #ff6a6a; font-weight: bold; }
+
+    /* Mobile responsive */
+    @media (max-width: 600px) {
+      .stats-grid {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .divider {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -73,15 +86,15 @@
 
   <div class="stats-grid">
     <div class="stats-column">
-      <div class="stat-box">Pending XMR: <span id="pending" class="blue">0</span></div>
-      <div class="stat-box">Paid XMR: <span id="paid" class="blue">0</span></div>
-      <div class="stat-box">Pool Status: <span id="pool_status" class="green">OFFLINE</span></div>
+      <div class="stat-box"><span>Pending XMR:</span> <span id="pending" class="blue">0</span></div>
+      <div class="stat-box"><span>Paid XMR:</span> <span id="paid" class="blue">0</span></div>
+      <div class="stat-box"><span>Pool Status:</span> <span id="pool_status" class="green">OFFLINE</span></div>
     </div>
     <div class="divider"></div>
     <div class="stats-column">
-      <div class="stat-box">Est. Daily: <span id="est_daily" class="blue">0</span></div>
-      <div class="stat-box">Est. Monthly: <span id="est_monthly" class="blue">0</span></div>
-      <div class="stat-box">Total Hashrate: <span id="total_hash" class="green">0</span> H/s</div>
+      <div class="stat-box"><span>Est. Daily:</span> <span id="est_daily" class="blue">0</span></div>
+      <div class="stat-box"><span>Est. Monthly:</span> <span id="est_monthly" class="blue">0</span></div>
+      <div class="stat-box"><span>Total Hashrate:</span> <span id="total_hash" class="green">0</span> H/s</div>
     </div>
   </div>
 
@@ -137,7 +150,7 @@
               <td>${m.acc}</td>
               <td>${m.rej}</td>
               <td>${m.up.toFixed(2)}</td>
-              <td class="${m.status.toLowerCase()}">${m.status}</td>
+              <td class="${m.status.toLowerCase()}" style="text-align: right;">${m.status}</td>
             `;
             tbody.appendChild(row);
           });
